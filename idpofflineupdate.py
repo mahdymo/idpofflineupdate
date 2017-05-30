@@ -17,15 +17,14 @@ def idpupdate(device, OS, location, build):
         version = x.text
     Cont_Update = raw_input("The available version is %s do you wish to proceed (y or n): " % version)
     Cont_Update = Cont_Update.upper()
-
-    SIGDBURL = "https://signatures.juniper.net/xmlupdate/225/SignatureUpdates/%s/SignatureUpdate.xml.gz" %version
-    urllib.urlretrieve(SIGDBURL, '%s/SignatureUpdate.xml' % location)
-
-    Files = ['ApplicationGroups', 'ApplicationGroups2', 'ApplicationSchema', 'Applications', 'Applications2',
-             'Detector',
-             'Groups', 'Heuristics', 'Libqmprotocols', 'Platforms']
-    signaturetree = etree.parse('%s/SignatureUpdate.xml' % location)
     if Cont_Update == 'Y':
+        SIGDBURL = "https://signatures.juniper.net/xmlupdate/225/SignatureUpdates/%s/SignatureUpdate.xml.gz" %version
+        urllib.urlretrieve(SIGDBURL, '%s/SignatureUpdate.xml' % location)
+
+        Files = ['ApplicationGroups', 'ApplicationGroups2', 'ApplicationSchema', 'Applications', 'Applications2',
+                 'Detector',
+                 'Groups', 'Heuristics', 'Libqmprotocols', 'Platforms']
+        signaturetree = etree.parse('%s/SignatureUpdate.xml' % location)
         for x in Files:
             element = signaturetree.xpath('//SignatureUpdate/%s' % x)
             for j in element:
