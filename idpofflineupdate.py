@@ -130,7 +130,6 @@ else:
 password = getpass.getpass("Please enter the password: ")
 
 for l in List_IPs:
-	print l
 	getdeviceinfo(l,location[0],password)
 
 count = 0
