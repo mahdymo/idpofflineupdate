@@ -29,9 +29,7 @@ def sysarguments():
                         nodeipfile = sys.argv[nodeipindex]
                         f = open(nodeipfile,"r")
                         for line in f:
-                        	List_IPs.append(line.strip())
-                        print List_IPs
-                        
+                        	List_IPs.append(line.strip())                        
                 if arg == "-o":
                         locaindex = sys.argv[1:].index(arg)+2
                         loc = sys.argv[locaindex]
