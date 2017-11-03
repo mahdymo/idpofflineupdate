@@ -47,10 +47,12 @@ def sysarguments():
 def idpupdate(device, OS, location, build,currentversion,l):
 	mk = "mkdir %s"%l
 	os.system(mk)
-	manifesturl = "https://signatures.juniper.net/cgi-bin/index.cgi?type=manifest&device=%s&feature=ai&detector=0.0.0&to=latest&os=%s&build=%s" % (device, OS, build)
-	urllib.urlretrieve(manifesturl, '%s/%s/manifest.xml' % (location,l))
-	signaturetree = etree.parse('%s/%s/manifest.xml' % (location,l))
-	element = signaturetree.xpath('/manifest/version')
+	manifesturl = "https://signatures.juniper.net/cgi-bin/index.cgi?device=%s&feature=idp&detector=12.6.140170603&from=&to=latest&os=%s&build=%s&type=update" % (device, OS, build)
+	urllib.urlretrieve(manifesturl, '%s/%s/SignatureUpdate.xml.gz' % (location,l))
+	quickcommand="gzip -df %s/%s/SignatureUpdate.xml.gz"% (location,l)
+	os.system(quickcommand)
+	signaturetree = etree.parse('%s/%s/SignatureUpdate.xml' % (location,l))
+	element = signaturetree.xpath('/SignatureUpdate/UpdateNumber')
 	for x in element:
 		version = x.text
 	
@@ -60,9 +62,7 @@ def idpupdate(device, OS, location, build,currentversion,l):
         SIGDBURL = "https://signatures.juniper.net/xmlupdate/225/SignatureUpdates/%s/SignatureUpdate.xml.gz" %version
         urllib.urlretrieve(SIGDBURL, '%s/%s/SignatureUpdate.xml' % (location,l))
 
-        Files = ['ApplicationGroups', 'ApplicationGroups2', 'ApplicationSchema', 'Applications', 'Applications2',
-                 'Detector',
-                 'Groups', 'Heuristics', 'Libqmprotocols', 'Platforms']
+	Files = ['ApplicationGroups', 'ApplicationGroups2', 'ApplicationSchema', 'Applications', 'Applications2','Detector','Groups', 'Heuristics', 'Libqmprotocols', 'Platforms','Templates']
         signaturetree = etree.parse('%s/%s/SignatureUpdate.xml' % (location,l))
         for x in Files:
             element = signaturetree.xpath('//SignatureUpdate/%s' % x)
@@ -71,7 +71,6 @@ def idpupdate(device, OS, location, build,currentversion,l):
                 filename = url.split('/')[-1]
                 urllib.urlretrieve(url, '%s/%s/%s' % (location,l, filename))
 
-	print "Download completed, unzip files ..."
 	loccommand = location+"/"+l+"/"+"*.gz"
 	command = "gzip -d %s" % loccommand
 	os.system(command)
